@@ -5,11 +5,12 @@ const addProductIntoDB = async (productInfo: TProduct) => {
   const result = await Product.create(productInfo);
   return result;
 };
-const getAllProductsFromDB = async () => {
+const getAllProductsFromDB = async (query: any) => {
   // using directly from mongoose
   //   const result = await Product.find().select('-_id -__v');
-  // using via post middleware
-  const result = await Product.find();
+
+  // using via post middleware removing the _id & __v
+  const result = await Product.find(query);
   return result;
 };
 
@@ -35,10 +36,23 @@ const deleteSingleProductFromDB = async (productId: string) => {
   return result;
 };
 
+const searchProductsFromDBbyKeyword = async (searchTerm: string) => {
+  const regex = new RegExp(searchTerm, 'i');
+  const result = await Product.find({
+    $or: [
+      { name: { $regex: regex } },
+      { description: { $regex: regex } },
+      { category: { $regex: regex } },
+    ],
+  });
+  return result;
+};
+
 export const productServices = {
   addProductIntoDB,
   getAllProductsFromDB,
   getSingleProductFromDB,
   updateSingleProductIntoDB,
   deleteSingleProductFromDB,
+  searchProductsFromDBbyKeyword,
 };

@@ -21,10 +21,24 @@ const addProduct = async (req: Request, res: Response) => {
 
 const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const result = await productServices.getAllProductsFromDB();
+    const { searchTerm } = req.query;
+    let query: Object = {},
+      dataSuccessfullMessage = 'Products fetched successfully!';
+    if (searchTerm) {
+      const regex = new RegExp(searchTerm as string, 'i');
+      query = {
+        $or: [
+          { name: { $regex: regex } },
+          //   { description: { $regex: regex } },
+          //   { category: { $regex: regex } },
+        ],
+      };
+      dataSuccessfullMessage = `Products matching search term ${searchTerm} fetched successfully!`;
+    }
+    const result = await productServices.getAllProductsFromDB(query);
     res.status(200).json({
       success: true,
-      message: 'Products fetched successfully!',
+      message: dataSuccessfullMessage,
       data: result,
     });
   } catch (err: any) {
@@ -63,11 +77,13 @@ const updateSingleProduct = async (req: Request, res: Response) => {
       productId,
       updateData,
     );
+    const data =
+      result === null ? 'No data available with this product _id' : result;
     // const data = result === null ? 'No data available with this product _id' : result;
     res.status(200).json({
       success: true,
       message: 'Product updated successfully!',
-      data: result,
+      data,
     });
   } catch (err: any) {
     res.status(500).json({
@@ -84,7 +100,7 @@ const deleteSingleProduct = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: 'Product deleted successfully!',
-      data: result,
+      data: null,
     });
   } catch (err: any) {
     res.status(500).json({
