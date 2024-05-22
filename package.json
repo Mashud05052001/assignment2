@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "concurrently \"tsc -w\" \"nodemon dist/server.js\"",
+    "start": "node ./dist/server.js",
+    "start:prod": "concurrently \"tsc -w\" \"nodemon dist/server.js\"",
     "start:dev": "ts-node-dev --respawn --transpile-only src/ server.ts",
-    "start:prod": "node ./dist/server.js",
     "lint": "npx eslint src --ignore-pattern .ts",
     "lint:fix": "npx eslint src --fix",
     "prettier": "prettier --ignore-path .gitignore --write \"./src/ **/*.+(js|ts|json)\"",
