@@ -30,7 +30,7 @@ Now create a .env file & provide your NODE_ENV, PORT & DATABASE_URL on root dire
 npm run build
 ```
 
-- To run the everytime updating & transform also ts to js after every update you can run the code
+- To run using only node
 ```bash
 npm start
 ```
@@ -40,7 +40,7 @@ npm start
 npm run start:dev
 ```
 
-- To run the code only in production mode 
+- To run the everytime updating & transform also ts to js after every update you can run the code
 ```bash
 npm run start:prod
 ```
