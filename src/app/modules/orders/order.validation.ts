@@ -1,25 +1,5 @@
 import { z } from 'zod';
-import { productServices } from '../products/product.services';
 import { Product } from '../products/product.model';
-
-// // Mock function to simulate checking the product ID in the database
-// const isValidProductId = async (productId: string) => {
-//   const product = await Product.exists({ _id: productId });
-//   console.log(product, 'Mashudur Rahman Mahi');
-//   return true;
-// };
-
-// // Custom refinement to check if the product ID exists in the collection
-// const productIdExists = async (productId: string, ctx: any) => {
-//   const exists = await isValidProductId(productId);
-//   if (!exists) {
-//     ctx.addIssue({
-//       code: z.ZodIssueCode.custom,
-//       message: 'Product ID does not exist.',
-//     });
-//   }
-//   return exists;
-// };
 
 const orderValidationSchema = z.object({
   email: z
