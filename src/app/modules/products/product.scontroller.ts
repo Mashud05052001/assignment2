@@ -1,14 +1,18 @@
 import { Request, Response } from 'express';
 import { productServices } from './product.services';
+import productValidationSchema from './product.validation';
 
 const addProduct = async (req: Request, res: Response) => {
   try {
     const productInfo = req.body;
-    const result = await productServices.addProductIntoDB(productInfo);
+    // validating product using ZOD
+    const zodParsedData = productValidationSchema.parse(productInfo);
+
+    const result = await productServices.addProductIntoDB(zodParsedData);
     res.status(200).json({
       success: true,
       message: 'Product created successfully!',
-      data: productInfo,
+      data: result,
     });
   } catch (err: any) {
     res.status(500).json({
@@ -22,20 +26,13 @@ const addProduct = async (req: Request, res: Response) => {
 const getAllProducts = async (req: Request, res: Response) => {
   try {
     const { searchTerm } = req.query;
-    let query: Object = {},
-      dataSuccessfullMessage = 'Products fetched successfully!';
-    if (searchTerm) {
-      const regex = new RegExp(searchTerm as string, 'i');
-      query = {
-        $or: [
-          { name: { $regex: regex } },
-          //   { description: { $regex: regex } },
-          //   { category: { $regex: regex } },
-        ],
-      };
-      dataSuccessfullMessage = `Products matching search term ${searchTerm} fetched successfully!`;
-    }
-    const result = await productServices.getAllProductsFromDB(query);
+    const dataSuccessfullMessage = searchTerm
+      ? `Products matching search term '${searchTerm}' fetched successfully!`
+      : 'Products fetched successfully!';
+
+    const result = await productServices.getAllProductsFromDB(
+      searchTerm as string,
+    );
     res.status(200).json({
       success: true,
       message: dataSuccessfullMessage,
@@ -49,7 +46,6 @@ const getAllProducts = async (req: Request, res: Response) => {
     });
   }
 };
-
 const getSingleProduct = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;

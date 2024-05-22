@@ -64,11 +64,11 @@ const productSchema = new Schema<TProduct>({
   },
 });
 
-// skip using pre middleware
-productSchema.pre('find', function (next) {
-  this.select('-_id -__v');
-  next();
-});
+// skip _id, __v using pre middleware
+// productSchema.pre('find', function (next) {
+//   this.select('-_id -__v');
+//   next();
+// });
 
 // creating model for this schema
 export const Product = model<TProduct>('Product', productSchema);
