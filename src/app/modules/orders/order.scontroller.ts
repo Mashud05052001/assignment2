@@ -8,10 +8,10 @@ const createOrder = async (req: Request, res: Response) => {
     const orderInfo: TOrder = req.body;
 
     const orderParsedData = await orderValidationSchema.parseAsync(orderInfo);
-    const result = 'mahi';
-    // const result = await OrderServices.createOrderIntoDB(
-    //   orderParsedData as TOrder,
-    // );
+
+    const result = await OrderServices.createOrderIntoDB(
+      orderParsedData as TOrder,
+    );
     res.status(200).json({
       success: true,
       message: 'Order created successfully!',
