@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import {
   TProduct,
   TProductInventory,
+  TProductModel,
   TProductVariant,
 } from './product.interface';
 
@@ -33,7 +34,7 @@ const productInventorySchema = new Schema<TProductInventory>(
   { _id: false },
 );
 
-const productSchema = new Schema<TProduct>({
+const productSchema = new Schema<TProduct, TProductModel>({
   name: {
     type: String,
     required: [true, 'Product Name is required.'],
@@ -64,6 +65,12 @@ const productSchema = new Schema<TProduct>({
   },
 });
 
+// schema for statics method
+productSchema.statics.isProductExist = async (productId) => {
+  const product = await Product.findById(productId);
+  return !!product;
+};
+
 // skip _id, __v using pre middleware
 // productSchema.pre('find', function (next) {
 //   this.select('-_id -__v');
@@ -71,4 +78,4 @@ const productSchema = new Schema<TProduct>({
 // });
 
 // creating model for this schema
-export const Product = model<TProduct>('Product', productSchema);
+export const Product = model<TProduct, TProductModel>('Product', productSchema);

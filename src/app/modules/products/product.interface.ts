@@ -1,3 +1,5 @@
+import { Model } from 'mongoose';
+
 export type TProductVariant = {
   type: string;
   value: string;
@@ -17,3 +19,7 @@ export type TProduct = {
   variants: TProductVariant[];
   inventory: TProductInventory;
 };
+
+export interface TProductModel extends Model<TProduct> {
+  isProductExist(productId: string): boolean;
+}
