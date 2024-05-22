@@ -3,7 +3,6 @@ import { TOrder } from './order.interface';
 import { OrderServices } from './order.services';
 import orderValidationSchema from './order.validation';
 import { productServices } from '../products/product.services';
-import { TProduct } from '../products/product.interface';
 
 const createOrder = async (req: Request, res: Response) => {
   try {
@@ -28,7 +27,7 @@ const createOrder = async (req: Request, res: Response) => {
             inStock: isExist,
           },
         };
-        const result = await productServices.updateSingleProductIntoDB(
+        await productServices.updateSingleProductIntoDB(
           productInfo._id.toString(),
           updatedDoc,
         );
@@ -44,12 +43,19 @@ const createOrder = async (req: Request, res: Response) => {
       message: 'Order created successfully!',
       data: result,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong!',
-      err,
-    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        success: false,
+        message: err.message || 'Something went wrong!',
+        err,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong!',
+      });
+    }
   }
 };
 const getAllOrders = async (req: Request, res: Response) => {
@@ -67,12 +73,19 @@ const getAllOrders = async (req: Request, res: Response) => {
       message,
       data: result,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong!',
-      err,
-    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        success: false,
+        message: err.message || 'Something went wrong!',
+        err,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong!',
+      });
+    }
   }
 };
 

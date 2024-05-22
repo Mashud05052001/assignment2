@@ -34,6 +34,7 @@ const getSingleProductFromDB = async (productId: string) => {
 
 const updateSingleProductIntoDB = async (
   productId: string,
+  // TODO : failed to solved this any error remove from Lint warning
   productUpdatedData: any,
 ) => {
   const result = await Product.findByIdAndUpdate(

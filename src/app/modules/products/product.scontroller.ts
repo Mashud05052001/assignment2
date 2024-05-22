@@ -14,12 +14,19 @@ const addProduct = async (req: Request, res: Response) => {
       message: 'Product created successfully!',
       data: result,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong!',
-      err,
-    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        success: false,
+        message: err.message || 'Something went wrong!',
+        err,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong!',
+      });
+    }
   }
 };
 
@@ -38,31 +45,46 @@ const getAllProducts = async (req: Request, res: Response) => {
       message: dataSuccessfullMessage,
       data: result,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong!',
-      err,
-    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        success: false,
+        message: err.message || 'Something went wrong!',
+        err,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong!',
+      });
+    }
   }
 };
 const getSingleProduct = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
     const result = await productServices.getSingleProductFromDB(productId);
-    const data =
-      result === null ? 'No data available with this product _id' : result;
+    if (result === null) {
+      throw new Error('No data available with this product _id');
+    }
     res.status(200).json({
       success: true,
       message: 'Products fetched successfully!',
-      data,
+      data: result,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong!',
-      err,
-    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        success: false,
+        message: err.message || 'Something went wrong!',
+        err,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong!',
+      });
+    }
   }
 };
 const updateSingleProduct = async (req: Request, res: Response) => {
@@ -73,37 +95,56 @@ const updateSingleProduct = async (req: Request, res: Response) => {
       productId,
       updateData,
     );
-    const data =
-      result === null ? 'No data available with this product _id' : result;
+    if (result === null) {
+      throw new Error('No data available with this product _id');
+    }
     // const data = result === null ? 'No data available with this product _id' : result;
     res.status(200).json({
       success: true,
       message: 'Product updated successfully!',
-      data,
+      data: result,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong!',
-      err,
-    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        success: false,
+        message: err.message || 'Something went wrong!',
+        err,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong!',
+      });
+    }
   }
 };
 const deleteSingleProduct = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
     const result = await productServices.deleteSingleProductFromDB(productId);
+    const data = result && null;
+    if (result === null) {
+      throw new Error('No data available with this product _id');
+    }
     res.status(200).json({
       success: true,
       message: 'Product deleted successfully!',
-      data: null,
+      data,
     });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Something went wrong!',
-      err,
-    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        success: false,
+        message: err.message || 'Something went wrong!',
+        err,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong!',
+      });
+    }
   }
 };
 
